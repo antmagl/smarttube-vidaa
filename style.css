@@ -12,3 +12,6 @@
 @media(max-width:1400px){header > * + *{margin-left:25px}.nav-item + .nav-item{margin-top:8px}#player-controls button + button{margin-left:12px}.transport > * + *{margin-left:12px}}
 video::-webkit-media-controls{display:none!important}
 button:focus-visible{outline:4px solid white;outline-offset:4px}
+
+.signin-code{font-size:64px;font-weight:600;letter-spacing:10px;color:#fff;text-align:center;margin:30px 0;padding:22px;background:#111;border-radius:6px}
+#signin-status{font-size:24px;color:#bbb;text-align:center;min-height:32px}
