@@ -48,8 +48,14 @@
       frame.contentWindow.postMessage({
         type: 'smarttube-key', key: event.key, keyCode: event.keyCode, which: event.which
       }, '*');
-      event.preventDefault();
-      event.stopPropagation();
+      // Let arrow keys reach the TV browser as well: on VIDAA that is what
+      // makes its on-screen pointer appear. The app also receives the key
+      // through postMessage and moves its own focus.
+      var arrow = /^Arrow/.test(event.key || '') || [37,38,39,40].indexOf(event.keyCode) !== -1;
+      if (!arrow) {
+        event.preventDefault();
+        event.stopPropagation();
+      }
     } catch (_) { focusApp(); }
   }, true);
 
