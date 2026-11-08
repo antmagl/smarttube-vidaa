@@ -26,13 +26,15 @@ It corresponds to the hosted build published under `/v16/`.
 Nothing needs to be built and no Cloudflare account is needed; the hosted
 build already points at a working proxy.
 
-> **SmartTube is not in Sidee's built-in catalog yet.** Add the preset once
-> using [`sidee/README.md`](sidee/README.md), or use a Sidee build that already
-> includes it. Without the preset, Sidee does not list SmartTube.
+> **SmartTube is not in upstream Sidee's built-in catalog.** Use
+> [antmagl/Sidee](https://github.com/antmagl/Sidee), a fork that includes Linux
+> support and this preset, or add the preset from
+> [`sidee/README.md`](sidee/README.md) to upstream Sidee.
 
-1. Start Sidee. For a source checkout, add the entry from
-   [`sidee/smarttube_preset.py`](sidee/smarttube_preset.py) to `PRESETS` in
-   `core/presets.py`, then run `python3 sidee.py`. Keep Sidee running.
+1. Start Sidee. The fork already lists SmartTube; with upstream Sidee, add the
+   entry from [`sidee/smarttube_preset.py`](sidee/smarttube_preset.py) to
+   `PRESETS` in `core/presets.py`, then run `python3 sidee.py`. Keep Sidee
+   running.
 2. Turn on the TV and connect it to the same home network.
 3. In the Sidee dashboard, click **Find TV** (or enter the TV's IP address).
 4. Click **Request code**, enter the 4-digit PIN shown on the TV, and confirm.

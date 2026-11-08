@@ -1,12 +1,27 @@
 # Sidee integration
 
-SmartTube is **not in Sidee's built-in catalog** as of Sidee master. Sidee only
-needs a preset entry to install the hosted or self-hosted app as a launcher
-tile. The dashboard card is optional; the CLI works with just the preset.
+SmartTube is **not in upstream Sidee master**. The easiest path is
+[antmagl/Sidee](https://github.com/antmagl/Sidee), a fork that includes Linux
+support and this preset; its dashboard has a built-in SmartTube card.
 
-## Add the preset (one-time)
+If you use upstream Sidee, add the preset below to a source checkout. Sidee
+only needs a preset entry to install the hosted or self-hosted app as a
+launcher tile; the dashboard card is optional and the CLI works with just the
+preset.
 
-Use a Sidee source checkout so `core/presets.py` can be edited:
+## Use the fork (recommended)
+
+```bash
+git clone https://github.com/antmagl/Sidee
+cd Sidee
+python3 -m pip install -r requirements.txt
+python3 sidee.py
+```
+
+Pair the TV, then choose **SmartTube** in the dashboard (or run
+`python3 sidee.py install smarttube`).
+
+## Add the preset to upstream Sidee (one-time)
 
 ```bash
 git clone https://github.com/Empi9245/Sidee

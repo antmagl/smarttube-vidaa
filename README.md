@@ -27,15 +27,16 @@ needed — the hosted build already points at a working proxy.
 
 ### 1. Start Sidee and pair the TV
 
-> **SmartTube is not in Sidee's built-in catalog yet.** Add the preset once
-> using [`vidaa/sidee/`](vidaa/sidee) in this repository, or use a Sidee build
-> that already includes it. Without the preset, Sidee does not list SmartTube.
+> **SmartTube is not in upstream Sidee's built-in catalog.** Use
+> [antmagl/Sidee](https://github.com/antmagl/Sidee), a fork with Linux support
+> and the SmartTube preset, or add the preset from
+> [`vidaa/sidee/`](vidaa/sidee) to upstream Sidee.
 
-1. Download Sidee for your OS from
-   [Sidee releases](https://github.com/Empi9245/Sidee/releases) and launch it,
-   or run it from a source checkout. Keep it running while you use the
+1. Download Sidee from
+   [antmagl/Sidee releases](https://github.com/antmagl/Sidee/releases), or run
+   the fork from a source checkout. Keep it running while you use the
    dashboard.
-2. If you use a source checkout, add the entry from
+2. Upstream Sidee only: add the entry from
    [`vidaa/sidee/smarttube_preset.py`](vidaa/sidee/smarttube_preset.py) to
    `PRESETS` in `core/presets.py`, then start Sidee with `python3 sidee.py`.
 3. Turn on the TV and connect it to the same home network.
