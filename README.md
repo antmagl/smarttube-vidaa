@@ -11,6 +11,9 @@ app runs in the TV's Chromium-based web browser (`odin`).
 **Current release: 0.1** — published as build `v16`. This is the first release
 intended as a usable starting point.
 
+Direct URL:
+**https://antmagl.github.io/smarttube-vidaa/v16/index.html**
+
 ## From zero to signed in (hosted build)
 
 Recommended path. Nothing needs to be built and no Cloudflare account is
