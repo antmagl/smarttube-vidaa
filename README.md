@@ -25,29 +25,36 @@ needed — the hosted build already points at a working proxy.
 - A Windows, macOS or Linux computer on the same network, to run Sidee.
 - A phone or computer with a browser, to enter the Google sign-in code.
 
-### 1. Install and pair Sidee
+### 1. Start Sidee and pair the TV
+
+> **SmartTube is not in Sidee's built-in catalog yet.** Add the preset once
+> using [`vidaa/sidee/`](vidaa/sidee) in this repository, or use a Sidee build
+> that already includes it. Without the preset, Sidee does not list SmartTube.
 
 1. Download Sidee for your OS from
-   [Sidee releases](https://github.com/Empi9245/Sidee/releases) and launch it.
-   Keep its window open while you use the dashboard.
-2. Turn on the TV and connect it to the same home network.
-3. In the Sidee dashboard, click **Find TV**. If discovery fails, enter the
+   [Sidee releases](https://github.com/Empi9245/Sidee/releases) and launch it,
+   or run it from a source checkout. Keep it running while you use the
+   dashboard.
+2. If you use a source checkout, add the entry from
+   [`vidaa/sidee/smarttube_preset.py`](vidaa/sidee/smarttube_preset.py) to
+   `PRESETS` in `core/presets.py`, then start Sidee with `python3 sidee.py`.
+3. Turn on the TV and connect it to the same home network.
+4. In the Sidee dashboard, click **Find TV**. If discovery fails, enter the
    TV's IP address from its network settings.
-4. Click **Request code**, then enter the 4-digit PIN shown on the TV.
-5. Confirm the code. Sidee is now paired.
+5. Click **Request code**, then enter the 4-digit PIN shown on the TV.
+6. Confirm the code. Sidee is now paired.
 
 ### 2. Install the SmartTube tile
 
-1. In the Sidee dashboard, choose **SmartTube** and install it. The hosted
-   address is the default; no URL is needed.
-2. Sidee sends the tile to the TV. You can close Sidee afterwards; the tile
-   keeps working.
+- If your Sidee dashboard lists SmartTube: choose **SmartTube** and install it.
+- Otherwise use the CLI:
 
-CLI equivalent:
+  ```bash
+  python3 sidee.py install smarttube
+  ```
 
-```bash
-python sidee.py install smarttube
-```
+The hosted address is the default; no URL is needed. Sidee sends the tile to
+the TV. You can close Sidee afterwards; the tile keeps working.
 
 ### 3. Open it on the TV
 
@@ -98,8 +105,7 @@ python sidee.py install smarttube
 
 ### Self-hosting instead
 
-The app source is the `vidaa/` port; this repository only includes the Worker
-source under [`proxy/`](proxy). With Node.js 22 and the app source:
+The full app source is included in [`vidaa/`](vidaa). With Node.js 22:
 
 ```bash
 cd vidaa
@@ -155,6 +161,7 @@ versioned snapshot for rollback:
 | `/v15/` | TV client CORS fix |
 | `/v14/` | History record attached to the first watchtime update |
 | `/v13/` and older | Earlier test builds |
+| `/vidaa/` | App source, Sidee preset and Worker source (not a runnable build) |
 
 ## HD proxy (optional)
 
@@ -184,10 +191,10 @@ A compatible proxy must:
 
 ### Cloudflare Worker reference
 
-The easiest path is the Worker in [`proxy/`](proxy) in this repository:
+The easiest path is the Worker in [`vidaa/proxy/`](vidaa/proxy) in this repository:
 
 1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Worker**.
-2. Name it `smarttube-vidaa-proxy` and deploy [`proxy/worker.js`](proxy/worker.js).
+2. Name it `smarttube-vidaa-proxy` and deploy [`vidaa/proxy/worker.js`](vidaa/proxy/worker.js).
 3. Copy the `https://smarttube-vidaa-proxy.<subdomain>.workers.dev` URL.
 4. Build the app with `SMARTTUBE_PROXY` set to that URL.
 
