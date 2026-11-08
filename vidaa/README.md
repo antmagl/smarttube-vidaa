@@ -52,10 +52,12 @@ Cloudflare is not required. Any HTTPS host that implements the
 ### 2. Build the app with the proxy URL
 
 ```bash
+# from the repository root
 cd vidaa
 npm install
 npm test
-SMARTTUBE_PROXY=https://<name>.<your-subdomain>.workers.dev   SMARTTUBE_BUILD=0.1 npm run build
+SMARTTUBE_PROXY=https://<name>.<your-subdomain>.workers.dev \
+  SMARTTUBE_BUILD=0.1 npm run build
 ```
 
 ### 3. Publish `dist/`
