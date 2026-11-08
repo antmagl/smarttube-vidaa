@@ -49,7 +49,8 @@ build, remove it and install the new one.
 - Signed-in home recommendations and YouTube watch history.
 - Watchtime reporting, including the playback record that creates a history
   entry.
-- 1080p/60fps HLS playback through a Cloudflare Worker proxy.
+- 1080p/60fps HLS playback through a CORS/media proxy (the included
+  Cloudflare Worker is a reference implementation, not a requirement).
 - VP9 preferred when the TV reports support, with H.264 fallback.
 - Original audio is selected automatically when YouTube offers AI-dubbed
   tracks.
@@ -62,8 +63,9 @@ build, remove it and install the new one.
 - Quality selection when more than one format is available.
 - VIDAA remote keys: arrows, OK/Enter, Back/Escape, Play/Pause and Stop.
 
-Without the Worker, the app falls back to the combined MP4 stream that YouTube
-still exposes to its Android client (typically 360p, sometimes 240p).
+Without any proxy, the app still plays the combined MP4 stream that YouTube
+exposes to its Android client (typically 360p, sometimes 240p). Sign-in, watch
+history and HD playback are unavailable in that mode.
 
 ## Versions
 
@@ -78,24 +80,48 @@ versioned snapshot for rollback:
 | `/v14/` | History record attached to the first watchtime update |
 | `/v13/` and older | Earlier test builds |
 
-## Cloudflare Worker
+## HD proxy (optional)
 
-HD playback needs the Cloudflare Worker from the `vidaa/` port (its source is
-not part of this build repository) because `googlevideo.com` does not grant CORS
-to third-party origins. The Worker also handles the TV sign-in exchange and
-watch-history requests.
+`googlevideo.com` does not grant CORS to third-party origins, so HD playback
+and sign-in need a small HTTPS relay. The included reference implementation
+runs on Cloudflare Workers, but Cloudflare is **not required** — any host that
+implements the same routes works: a VPS, Raspberry Pi, Docker container, Deno
+Deploy, Vercel/Netlify functions, or nginx/Caddy.
+
+The client only needs a base URL. It appends `/?url=<encoded target>` and calls
+the auth/stats routes itself. Rebuild with any HTTPS base URL:
+
+```bash
+SMARTTUBE_PROXY=https://your-proxy.example.com npm run build
+```
+
+A compatible proxy must:
+
+- forward only allowlisted YouTube/Google hosts (never act as an open proxy);
+- add CORS headers, including `X-Goog-AuthUser`, and preserve `Range`/`206`;
+- rewrite HLS manifests so variants, audio tracks and segments stay proxied;
+- provide `/auth/device`, `/auth/token` and `/auth/refresh` for TV sign-in;
+- provide `/stats` and handle the `ytrec` watchtime marker for history;
+- be served over HTTPS (the app page is HTTPS and mixed content is blocked).
+
+`/debug/log` is optional; the app ignores failures there.
+
+### Cloudflare Worker reference
+
+The easiest path is the Worker from the `vidaa/` port (its source is not part of
+this build repository):
 
 1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Worker**.
 2. Name it `smarttube-vidaa-proxy` and deploy the port's `proxy/worker.js`.
 3. Copy the `https://smarttube-vidaa-proxy.<subdomain>.workers.dev` URL.
 4. Build the app with `SMARTTUBE_PROXY` set to that URL.
 
-The Worker only proxies YouTube/Google hosts, preserves `Range`/`206`
-responses, rewrites HLS manifests, applies the TV User-Agent only to TVHTML5
-player requests, and forwards watch-history reports.
+The reference Worker applies the TV User-Agent only to TVHTML5 player requests
+and forwards watch-history reports.
 
 Cloudflare's free Workers plan has daily request limits. 1080p HLS uses many
-segment requests, so heavy viewing may hit them.
+segment requests, so heavy viewing may hit them. Any other host has its own
+bandwidth/request limits.
 
 ## Architecture
 
@@ -120,7 +146,8 @@ SmartTube experience rather than the Android player.
   the Android player are not implemented.
 - YouTube can change its TV endpoints or challenge an IP at any time. The app
   shows a readable error instead of bypassing a challenge.
-- HD playback depends on the Cloudflare Worker. If it is down or over quota,
+- HD playback depends on the configured CORS/media proxy (the included
+  Cloudflare Worker is the reference). If the proxy is down or over quota,
   HD playback fails.
 - DRM-protected and live formats are not guaranteed.
 - SponsorBlock is a best-effort public API; segments can be missing or late.
