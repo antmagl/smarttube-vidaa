@@ -23,73 +23,74 @@ Direct URL:
 > needed for it. Self-hosted builds must deploy a proxy (Cloudflare
 > recommended) and build with `SMARTTUBE_PROXY=<url>`.
 
-## From zero to signed in (hosted build)
+## From zero to signed in
 
-Recommended path. Nothing needs to be built and no Cloudflare account is
-needed — the hosted build already points at a working proxy.
+This is the full path: you host the proxy and the app yourself, which gives you
+1080p, Google sign-in and watch history.
 
 ### What you need
 
 - A Hisense VIDAA TV (2024+ firmware recommended), on your home network.
 - A Windows, macOS or Linux computer on the same network, to run Sidee.
 - A phone or computer with a browser, to enter the Google sign-in code.
+- Node.js 22 or newer for the build.
+- A Cloudflare account (free) for the recommended Worker, or another HTTPS
+  host that implements the proxy contract.
 
-### 1. Start Sidee and pair the TV
+### 1. Deploy the proxy (Cloudflare Worker recommended)
 
-> **SmartTube is not in upstream Sidee's built-in catalog.** Use
-> [antmagl/Sidee](https://github.com/antmagl/Sidee), a fork with Linux support
-> and the SmartTube preset, or add the preset from
-> [`vidaa/sidee/`](vidaa/sidee) to upstream Sidee.
+1. Open <https://dash.cloudflare.com/> → **Workers & Pages** → **Create** →
+   **Worker**.
+2. Name it `smarttube-vidaa-proxy`, create it, then choose **Edit code**.
+3. Replace the sample code with [`vidaa/proxy/worker.js`](vidaa/proxy/worker.js)
+   and choose **Deploy**.
+4. Copy your Worker URL:
+   `https://<name>.<your-subdomain>.workers.dev`
 
-1. Clone and start the fork from source:
+Cloudflare is not required. Any HTTPS host that implements the
+[proxy contract](#proxy-host-required-for-1080p-and-sign-in) works.
 
-   ```bash
-   git clone https://github.com/antmagl/Sidee
-   cd Sidee
-   python3 -m pip install -r requirements.txt
-   python3 sidee.py
-   ```
+### 2. Build the app with the proxy URL
 
-   On Windows use `python` instead of `python3`. The fork is installed from
-   source; it does not publish release packages. Keep the terminal open.
-2. Upstream Sidee only: add the entry from
-   [`vidaa/sidee/smarttube_preset.py`](vidaa/sidee/smarttube_preset.py) to
-   `PRESETS` in `core/presets.py`, then start Sidee with `python3 sidee.py`.
-3. Turn on the TV and connect it to the same home network.
-4. In the Sidee dashboard, click **Find TV**. If discovery fails, enter the
-   TV's IP address from its network settings.
-5. Click **Request code**, then enter the 4-digit PIN shown on the TV.
-6. Confirm the code. Sidee is now paired.
+```bash
+cd vidaa
+npm install
+npm test
+SMARTTUBE_PROXY=https://<name>.<your-subdomain>.workers.dev   SMARTTUBE_BUILD=0.1 npm run build
+```
 
-### 2. Install the SmartTube tile
+### 3. Publish `dist/`
 
-- If your Sidee dashboard lists SmartTube: choose **SmartTube** and install it.
-- Otherwise use the CLI:
+Upload `vidaa/dist/` to any HTTPS static host: GitHub Pages, Netlify, Vercel,
+nginx, or your own server. The entry point is `index.html`.
 
-  ```bash
-  python3 sidee.py install smarttube
-  ```
+### 4. Install the SmartTube tile
 
-The hosted address is the default; no URL is needed. Sidee sends the tile to
-the TV. You can close Sidee afterwards; the tile keeps working.
+Start the Sidee fork from source:
 
-### 3. Open it on the TV
+```bash
+git clone https://github.com/antmagl/Sidee
+cd Sidee
+python3 -m pip install -r requirements.txt
+python3 sidee.py
+```
 
-1. Press **Home** on the remote.
-2. Open the SmartTube tile. The first load may take a few seconds.
-3. Open **Settings** in the left sidebar. The bottom line should read:
+On Windows use `python` instead of `python3`. Pair the TV (Find TV → Request
+code → enter the 4-digit PIN → Confirm), then:
 
-   `SmartTube for VIDAA 0.1.0 · v16 · unofficial`
+```bash
+python3 sidee.py install smarttube --url https://your-host.example.com/
+```
 
-   If it shows an older version, the TV is still using a cached tile: remove
-   the old tile and install the new one.
+If your Sidee build does not support `--url`, edit the `url` field in
+[`vidaa/sidee/smarttube_preset.py`](vidaa/sidee/smarttube_preset.py) before
+installing.
 
-### 4. Sign in to Google
+### 5. Sign in to Google
 
 1. On the TV, open **Settings** → **YouTube account** (it says `Signed out`)
    and press **OK**.
-2. The TV displays a short code and asks you to open
-   `google.com/device`.
+2. The TV displays a short code and asks you to open `google.com/device`.
 3. On your phone or computer, open
    [google.com/device](https://www.google.com/device), enter the code, choose
    the Google account and approve access.
@@ -98,19 +99,31 @@ the TV. You can close Sidee afterwards; the tile keeps working.
 
 > Pressing **OK** on **YouTube account** while signed in signs you out.
 
-### 5. Check playback and history
+### 6. Check playback and history
 
 1. Pick a video and let it play for at least 30 seconds.
 2. The TV's **History** tab lists it locally.
 3. On [youtube.com](https://www.youtube.com/) → **History**, the video should
    appear within a minute.
 
+### Shortcut: use the ready-hosted build
+
+If you do not want to host the Worker and app yourself, open:
+
+**https://antmagl.github.io/smarttube-vidaa/v16/index.html**
+
+It already includes the project's Worker. Skip steps 1–3, go to step 4, and
+install the tile with the default preset URL (no `--url` needed). Sign in as in
+step 5.
+
 ### If something does not work
 
+- **Only 360p.** The build was made without `SMARTTUBE_PROXY`, or the proxy is
+  down/over quota. Rebuild with the proxy URL.
 - **The tile opens an old build.** The TV caches launcher entries. Remove the
   old tile and install the new one.
-- **"Account service is not configured".** That build has no proxy. Use the
-  hosted URL above, or rebuild with a proxy (see below).
+- **"Account service is not configured".** The build has no proxy. Use the
+  hosted URL or rebuild with a proxy.
 - **The sign-in code expires.** Reopen **Settings → YouTube account** for a new
   code.
 - **"Playback unavailable" or "Sign in to confirm you're not a bot".** YouTube
@@ -118,37 +131,6 @@ the TV. You can close Sidee afterwards; the tile keeps working.
   persists, check the proxy.
 - **Find TV fails.** Make sure both devices are on the same network, disable
   VPN/guest Wi-Fi, allow port 36669, or enter the TV's IP manually.
-- **No HD.** The proxy is down or over quota; the 360p fallback still plays.
-
-### Self-hosting instead
-
-Self-hosting has one mandatory first step: **deploy a proxy**. Without it the
-build only plays the combined 360p/240p MP4 and cannot sign in or record
-history.
-
-The full app source is included in [`vidaa/`](vidaa). With Node.js 22:
-
-1. Deploy the proxy — Cloudflare Worker recommended (see **Proxy host** below),
-   or any compatible HTTPS host.
-2. Build with that URL:
-
-   ```bash
-   cd vidaa
-   npm install
-   npm test
-   SMARTTUBE_PROXY=https://your-proxy.example.com SMARTTUBE_BUILD=0.1 npm run build
-   ```
-
-3. Publish `dist/` on any HTTPS static host.
-4. Install the tile with your URL:
-
-   ```bash
-   python sidee.py install smarttube --url https://your-host.example.com/
-   ```
-
-5. Sign in to Google as in step 4 above.
-
-Skipping step 1 gives you **360p/240p only** and no account features.
 
 ## What works in 0.1
 
