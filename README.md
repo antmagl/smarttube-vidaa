@@ -133,8 +133,41 @@ SmartTube experience rather than the Android player.
 - Stream URLs are signed, expire, and are never written to history.
 - No project-operated backend, telemetry or analytics.
 
-## Attribution
+## Credits
 
-MIT. See `LICENSE` and `THIRD_PARTY_NOTICES.md`. This is an independent
-project and is not affiliated with or endorsed by SmartTube, YouTube, Google,
-Hisense or VIDAA.
+This port would not exist without the work of these projects and people:
+
+- **[SmartTube](https://github.com/yuliskov/SmartTube)** by
+  [Yuriy Lyskov (yuliskov)](https://github.com/yuliskov) and contributors —
+  the original Android TV app whose behaviour, SponsorBlock logic, TV OAuth
+  client and remote-first UX this port follows. MIT.
+- **[TizenSmartTube](https://github.com/giilc/TizenSmartTube)** by
+  [giilc](https://github.com/giilc) and contributors — the MIT-licensed Tizen
+  web port (0.3.18, commit `7f8a22a`) that this VIDAA port is based on. The
+  playback provider, adaptive-format pairing, HLS/DASH players, SponsorBlock
+  logic, remote navigation, tests and build structure are adapted from it.
+- **[YouTube.js](https://github.com/LuanRT/YouTube.js)** by
+  [LuanRT](https://github.com/LuanRT) — the YouTube InnerTube client used for
+  browsing, search and playback metadata. MIT.
+- **[hls.js](https://github.com/video-dev/hls.js)** — HLS playback.
+  Apache-2.0.
+- **[dash.js](https://github.com/Dash-Industry-Forum/dash.js)** — DASH
+  playback. BSD-3-Clause.
+- **[core-js](https://github.com/zloirock/core-js)** by
+  [Denis Pushkarev](https://github.com/zloirock) — polyfills for older TV
+  engines. MIT.
+- **[Sidee](https://github.com/Empi9245/Sidee)** by
+  [Empi9245](https://github.com/Empi9245) and contributors — TV pairing and
+  launcher-tile installation.
+- **[SponsorBlock](https://sponsor.ajay.app/)** — the public skip-segment API.
+- **Roboto Condensed** — Google Fonts contributors, SIL Open Font License 1.1.
+- **YouTube and Google** — the TV endpoints and OAuth service used
+  unofficially by this client.
+
+The complete license texts are in `THIRD_PARTY_NOTICES.md`, `LICENSE` and
+`licenses/`.
+
+## Licence
+
+MIT. This is an independent project and is not affiliated with or endorsed by
+SmartTube, YouTube, Google, Hisense or VIDAA.
