@@ -32,10 +32,17 @@ needed — the hosted build already points at a working proxy.
 > and the SmartTube preset, or add the preset from
 > [`vidaa/sidee/`](vidaa/sidee) to upstream Sidee.
 
-1. Download Sidee from
-   [antmagl/Sidee releases](https://github.com/antmagl/Sidee/releases), or run
-   the fork from a source checkout. Keep it running while you use the
-   dashboard.
+1. Clone and start the fork from source:
+
+   ```bash
+   git clone https://github.com/antmagl/Sidee
+   cd Sidee
+   python3 -m pip install -r requirements.txt
+   python3 sidee.py
+   ```
+
+   On Windows use `python` instead of `python3`. The fork is installed from
+   source; it does not publish release packages. Keep the terminal open.
 2. Upstream Sidee only: add the entry from
    [`vidaa/sidee/smarttube_preset.py`](vidaa/sidee/smarttube_preset.py) to
    `PRESETS` in `core/presets.py`, then start Sidee with `python3 sidee.py`.

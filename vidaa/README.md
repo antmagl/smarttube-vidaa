@@ -31,10 +31,20 @@ build already points at a working proxy.
 > support and this preset, or add the preset from
 > [`sidee/README.md`](sidee/README.md) to upstream Sidee.
 
-1. Start Sidee. The fork already lists SmartTube; with upstream Sidee, add the
-   entry from [`sidee/smarttube_preset.py`](sidee/smarttube_preset.py) to
-   `PRESETS` in `core/presets.py`, then run `python3 sidee.py`. Keep Sidee
-   running.
+1. Clone and start the fork from source:
+
+   ```bash
+   git clone https://github.com/antmagl/Sidee
+   cd Sidee
+   python3 -m pip install -r requirements.txt
+   python3 sidee.py
+   ```
+
+   On Windows use `python` instead of `python3`. The fork is installed from
+   source; it does not publish release packages. Keep the terminal open.
+   With upstream Sidee, add the entry from
+   [`sidee/smarttube_preset.py`](sidee/smarttube_preset.py) to `PRESETS` in
+   `core/presets.py` before starting it.
 2. Turn on the TV and connect it to the same home network.
 3. In the Sidee dashboard, click **Find TV** (or enter the TV's IP address).
 4. Click **Request code**, enter the 4-digit PIN shown on the TV, and confirm.

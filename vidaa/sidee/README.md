@@ -18,6 +18,9 @@ python3 -m pip install -r requirements.txt
 python3 sidee.py
 ```
 
+On Windows use `python` instead of `python3`. The fork is installed from source;
+it does not publish release packages.
+
 Pair the TV, then choose **SmartTube** in the dashboard (or run
 `python3 sidee.py install smarttube`).
 
@@ -71,6 +74,6 @@ dashboard, add the card markup and JavaScript to `core/dashboard.html` and copy
 
 ## Why this is needed
 
-Sidee's packaged releases do not ship the SmartTube preset, and packaged builds
-may not allow editing `core/presets.py`. Use a source checkout, or a Sidee build
-that already includes the preset.
+Upstream Sidee does not ship the SmartTube preset. This fork includes it and is
+installed from source with `python sidee.py`; no release packages are
+published.
