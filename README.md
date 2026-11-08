@@ -163,6 +163,7 @@ This port would not exist without the work of these projects and people:
 - **Roboto Condensed** — Google Fonts contributors, SIL Open Font License 1.1.
 - **YouTube and Google** — the TV endpoints and OAuth service used
   unofficially by this client.
+- **VIDAA port and web hosting** by [antmagl](https://github.com/antmagl).
 
 The complete license texts are in `THIRD_PARTY_NOTICES.md`, `LICENSE` and
 `licenses/`.
