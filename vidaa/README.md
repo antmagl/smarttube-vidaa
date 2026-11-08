@@ -11,16 +11,11 @@ stream selection, SponsorBlock, signed-in recommendations, watch history and no
 advertising UI — and runs entirely in the TV browser.
 
 **Version 0.1** is the first release intended as a usable starting point.
-It corresponds to the hosted build published under `/v16/`.
 
-> **Proxy required for HD and account features.**
-> Without a configured proxy the app falls back to YouTube's combined MP4
-> stream — usually **360p, sometimes 240p**. Sign-in, watch history and
-> 1080p/60fps are unavailable in that mode.
->
-> The hosted build already includes the project's Worker. Self-hosted builds
-> must deploy a proxy (Cloudflare recommended) and build with
-> `SMARTTUBE_PROXY=<url>`.
+> **Self-host only.** This source repository does not provide a hosted app or a
+> shared proxy. Deploy your own proxy, build with its URL and host the result.
+> Without your own proxy the app is limited to **360p/240p** and cannot sign in
+> or record watch history.
 
 ## From zero to signed in
 
@@ -109,16 +104,6 @@ to your proxy only for token refresh.
 3. On [youtube.com](https://www.youtube.com/) → **History**, the video should
    appear within a minute.
 
-### Shortcut: use the ready-hosted build
-
-If you do not want to host the Worker and app yourself, open:
-
-**https://antmagl.github.io/smarttube-vidaa/v16/index.html**
-
-It already includes the project's Worker. Skip steps 1–3, go to step 4, and
-install the tile with the default preset URL (no `--url` needed). Sign in as in
-step 5.
-
 ### If something does not work
 
 - **Only 360p.** The build was made without `SMARTTUBE_PROXY`, or the proxy is
@@ -126,7 +111,7 @@ step 5.
 - **The tile opens an old build.** The TV caches launcher entries. Remove the
   old tile and install the new one.
 - **"Account service is not configured".** The build has no proxy. Use the
-  hosted build or rebuild with a proxy.
+  rebuild with your proxy URL.
 - **The sign-in code expires.** Reopen **Settings → YouTube account** for a new
   code.
 - **"Playback unavailable" or "Sign in to confirm you're not a bot".** YouTube
@@ -155,8 +140,8 @@ step 5.
 - SponsorBlock auto-skip with category presets.
 - Quality selection when more than one format is available.
 - VIDAA remote keys: arrows, OK/Enter, Back/Escape, Play/Pause and Stop.
-- Sidee integration: the hosted build is a static site and needs no computer
-  or local server.
+- Sidee integration: install the tile with your own hosted URL; no server needs
+  to stay running after installation.
 
 > **No proxy = 360p only.** Without a configured proxy the app falls back to the
 > combined MP4 stream (usually 360p, sometimes 240p). Sign-in, watch history and
@@ -198,7 +183,7 @@ To include the Cloudflare Worker URL and a visible build label:
 
 ```bash
 SMARTTUBE_PROXY=https://smarttube-vidaa-proxy.<subdomain>.workers.dev \
-SMARTTUBE_BUILD=v16 npm run build
+SMARTTUBE_BUILD=0.1 npm run build
 ```
 
 ### Run locally for development
@@ -306,14 +291,12 @@ How it works:
    `/api/stats/watchtime`; the Worker sends the playback record because the
    VIDAA browser can drop that request during startup.
 
-## Versioning and TV caching
+## TV caching
 
-The hosted repository keeps the root plus immutable snapshots for every
-release (`/v2/` … `/v16/`). The root always serves the latest build.
-
-The TV caches launcher tiles by app id, so each release is registered under a
-new Sidee app id (`smarttube16` for build v16). If a tile keeps opening an old
-build after an update, remove the old tile and install the new one.
+The TV caches launcher tiles by app id. When you change the hosted URL or
+publish a new build, register it under a new app id (or remove and reinstall
+the old tile). The current id is shown in
+[`sidee/smarttube_preset.py`](sidee/smarttube_preset.py).
 
 ## Limitations
 

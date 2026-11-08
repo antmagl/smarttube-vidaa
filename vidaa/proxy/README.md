@@ -58,12 +58,15 @@ Requires Node.js 18+ and a Cloudflare login:
 
 ```bash
 cd vidaa/proxy
+cp wrangler.toml.example wrangler.toml
+# edit wrangler.toml: set a unique name
 npx wrangler login
 npx wrangler deploy
 ```
 
-`wrangler.toml` contains only a generic name and the entry point. Wrangler
-prints your `workers.dev` URL after deployment.
+`wrangler.toml` is ignored by git. Choose a unique name; the `workers.dev` URL
+is derived from it, and reusing a public name exposes that URL. Wrangler prints
+your URL after deployment.
 
 ## Proxy contract
 

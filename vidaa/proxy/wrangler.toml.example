@@ -1,0 +1,6 @@
+# Copy this file to wrangler.toml and choose a unique name.
+# Do not reuse a name from a public repository: the workers.dev URL follows it.
+name = "smarttube-vidaa-proxy-CHANGE-ME"
+main = "worker.js"
+compatibility_date = "2026-11-07"
+workers_dev = true
