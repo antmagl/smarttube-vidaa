@@ -80,12 +80,13 @@ versioned snapshot for rollback:
 
 ## Cloudflare Worker
 
-HD playback needs the Worker in the source tree's `proxy/worker.js` because
-`googlevideo.com` does not grant CORS to third-party origins. The Worker also
-handles the TV sign-in exchange and watch-history requests.
+HD playback needs the Cloudflare Worker from the `vidaa/` port (its source is
+not part of this build repository) because `googlevideo.com` does not grant CORS
+to third-party origins. The Worker also handles the TV sign-in exchange and
+watch-history requests.
 
 1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Worker**.
-2. Name it `smarttube-vidaa-proxy` and deploy `proxy/worker.js`.
+2. Name it `smarttube-vidaa-proxy` and deploy the port's `proxy/worker.js`.
 3. Copy the `https://smarttube-vidaa-proxy.<subdomain>.workers.dev` URL.
 4. Build the app with `SMARTTUBE_PROXY` set to that URL.
 
