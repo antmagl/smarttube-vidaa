@@ -13,6 +13,15 @@ advertising UI — and runs entirely in the TV browser.
 **Version 0.1** is the first release intended as a usable starting point.
 It corresponds to the hosted build published under `/v16/`.
 
+> **Proxy required for HD and account features.**
+> Without a configured proxy the app falls back to YouTube's combined MP4
+> stream — usually **360p, sometimes 240p**. Sign-in, watch history and
+> 1080p/60fps are unavailable in that mode.
+>
+> The hosted build already includes the project's Worker. Self-hosted builds
+> must deploy a proxy (Cloudflare recommended) and build with
+> `SMARTTUBE_PROXY=<url>`.
+
 ## From zero to signed in
 
 ### What you need
@@ -59,8 +68,11 @@ build already points at a working proxy.
 
 ### Option B — build and self-host
 
-1. Install Node.js 22 or newer.
-2. Build the app:
+1. **Deploy a proxy first.** It is required for 1080p, sign-in and watch
+   history. Cloudflare Worker recommended; see
+   [Proxy host](#proxy-host-required-for-1080p-and-sign-in). Without it, the
+   app only plays 360p/240p.
+2. Install Node.js 22 or newer and build with the proxy URL:
 
    ```bash
    cd vidaa
@@ -69,8 +81,6 @@ build already points at a working proxy.
    SMARTTUBE_PROXY=https://your-proxy.example.com SMARTTUBE_BUILD=0.1 npm run build
    ```
 
-   A proxy is optional if you only need 360p playback and no sign-in. See
-   [HD proxy](#hd-proxy-optional).
 3. Publish `dist/` on any HTTPS static host, or test on the LAN with
    `npm run serve`.
 4. Install the tile with your URL:
@@ -78,6 +88,8 @@ build already points at a working proxy.
    ```bash
    python sidee.py install smarttube --url https://your-host.example.com/
    ```
+
+Skipping step 1 gives you **360p/240p only** and no account features.
 
 ### Sign in to Google (both options)
 
@@ -126,8 +138,8 @@ it.
 - Signed-in home recommendations and YouTube watch history.
 - Watchtime reporting, including the playback record that creates a history
   entry.
-- 1080p/60fps HLS playback through a CORS/media proxy (the included
-  Cloudflare Worker is a reference implementation, not a requirement).
+- 1080p/60fps HLS playback — requires the configured proxy; without it the app
+  is limited to 360p/240p.
 - VP9 is preferred when the TV reports support, with H.264 fallback.
 - Original audio is selected automatically when YouTube offers AI-dubbed
   tracks.
@@ -142,18 +154,28 @@ it.
 - Sidee integration: the hosted build is a static site and needs no computer
   or local server.
 
-Without any proxy, the app still plays the combined MP4 stream that YouTube
-exposes to its Android client (typically 360p, sometimes 240p). Sign-in, watch
-history and HD playback are unavailable in that mode.
+> **No proxy = 360p only.** Without a configured proxy the app falls back to the
+> combined MP4 stream (usually 360p, sometimes 240p). Sign-in, watch history and
+> 1080p/60fps are unavailable.
 
 ## Build
 
 Node.js 22 or newer is required.
 
+> **A plain `npm run build` is the 360p-only fallback.** For 1080p, sign-in and
+> watch history, set `SMARTTUBE_PROXY` to a deployed proxy. See
+> [Proxy host](#proxy-host-required-for-1080p-and-sign-in).
+
 ```bash
 cd vidaa
 npm install
 npm test
+SMARTTUBE_PROXY=https://your-proxy.example.com SMARTTUBE_BUILD=0.1 npm run build
+```
+
+For the 360p-only fallback (no proxy, no sign-in, no history):
+
+```bash
 npm run build
 ```
 
@@ -189,14 +211,17 @@ python3 scripts/serve.py dist 8090
 Use the printed `192.168.x.x` / `10.x.x.x` address from the TV; `127.0.0.1`
 points at the TV itself.
 
-## HD proxy (optional)
+## Proxy host (required for 1080p and sign-in)
 
 `googlevideo.com` does not grant CORS to third-party origins, so the app cannot
 read HLS/DASH segments or the higher-quality streams without a small HTTPS
-relay. The reference implementation in [`proxy/`](proxy) runs on Cloudflare
-Workers, but Cloudflare is **not required** — any host that implements the same
-routes works: a VPS, Raspberry Pi, Docker container, Deno Deploy,
-Vercel/Netlify functions, or nginx/Caddy.
+relay. A proxy is **required** for the full app; without one you get 360p/240p
+only and cannot sign in or record history.
+
+**Cloudflare Workers is the recommended host.** The reference implementation in
+[`proxy/`](proxy) runs there. Any compatible HTTPS host also works: a VPS,
+Raspberry Pi, Docker container, Deno Deploy, Vercel/Netlify functions, or
+nginx/Caddy.
 
 The client only needs a base URL. It appends `/?url=<encoded target>` and calls
 the auth/stats routes itself. Rebuild with any HTTPS base URL:
@@ -293,9 +318,11 @@ build after an update, remove the old tile and install the new one.
   implemented.
 - YouTube can change its TV endpoints, require sign-in or challenge an IP at
   any time. The app shows a readable error instead of bypassing a challenge.
-- **1080p/60fps depends on the configured CORS/media proxy** (the included
-  Cloudflare Worker is the reference). If the proxy is down or over quota,
-  HD playback fails.
+- **Without a proxy the app is limited to 360p/240p**, with no sign-in and no
+  watch history.
+- **1080p/60fps depends on the configured proxy** (the included Cloudflare
+  Worker is the reference). If the proxy is down or over quota, HD playback
+  fails.
 - DRM-protected and live formats are not guaranteed.
 - SponsorBlock is a best-effort public API; segments can be missing or late.
 - The app is experimental. Test on the exact TV firmware before publishing a

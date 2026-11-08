@@ -66,6 +66,9 @@ Some Sidee checkouts also support:
 python3 sidee.py install smarttube --url https://your-host.example.com/
 ```
 
+A self-hosted build needs a proxy for 1080p and sign-in. Without one the TV
+shows only 360p/240p and cannot sign in or record history.
+
 ## Dashboard card (optional)
 
 The CLI install above is enough. If you want the SmartTube card in the Sidee

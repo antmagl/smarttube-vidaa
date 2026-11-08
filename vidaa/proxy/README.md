@@ -1,13 +1,16 @@
 # SmartTube VIDAA proxy
 
-Optional HTTPS relay for the SmartTube VIDAA web client. This directory
-contains a reference implementation for **Cloudflare Workers**. Cloudflare is
-not required: any HTTPS host that implements the [proxy contract](#proxy-contract)
-works, including a VPS, Raspberry Pi, Docker container, Deno Deploy,
-Vercel/Netlify functions or nginx/Caddy.
+HTTPS relay for the SmartTube VIDAA web client. A proxy is **required** for
+1080p, Google sign-in and watch history; without one the app falls back to
+YouTube's combined MP4 stream and shows only **360p/240p**.
 
-The player works without a proxy, but only for the combined 360p/240p MP4
-stream that YouTube exposes to its Android client. A proxy is required for:
+**Cloudflare Workers is the recommended host.** This directory contains a
+reference implementation for it. Cloudflare is not required: any HTTPS host
+that implements the [proxy contract](#proxy-contract) works, including a VPS,
+Raspberry Pi, Docker container, Deno Deploy, Vercel/Netlify functions or
+nginx/Caddy.
+
+A proxy is required for:
 
 - 1080p/60fps HLS/DASH playback;
 - Google sign-in (TV device-code exchange);
