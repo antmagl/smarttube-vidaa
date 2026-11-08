@@ -98,8 +98,8 @@ python sidee.py install smarttube
 
 ### Self-hosting instead
 
-The app source is the `vidaa/` port (not included in this build repository).
-With Node.js 22 and that source:
+The app source is the `vidaa/` port; this repository only includes the Worker
+source under [`proxy/`](proxy). With Node.js 22 and the app source:
 
 ```bash
 cd vidaa
@@ -184,11 +184,10 @@ A compatible proxy must:
 
 ### Cloudflare Worker reference
 
-The easiest path is the Worker from the `vidaa/` port (its source is not part of
-this build repository):
+The easiest path is the Worker in [`proxy/`](proxy) in this repository:
 
 1. Cloudflare dashboard → **Workers & Pages** → **Create** → **Worker**.
-2. Name it `smarttube-vidaa-proxy` and deploy the port's `proxy/worker.js`.
+2. Name it `smarttube-vidaa-proxy` and deploy [`proxy/worker.js`](proxy/worker.js).
 3. Copy the `https://smarttube-vidaa-proxy.<subdomain>.workers.dev` URL.
 4. Build the app with `SMARTTUBE_PROXY` set to that URL.
 
